@@ -1,0 +1,234 @@
+/* Maths Clash cast: the night arena's audience, the two robot mascots, and the title / menu / lobby / results scenes.
+   Designed and built by Hamza Ashour. */
+
+/* =====================================================================
+   THE ARENA AND ITS AUDIENCE
+   ===================================================================== */
+#crowd { position: absolute; inset: 0; pointer-events: none; z-index: 1; --f: 1; }
+#crowd.focus { --f: 0.7; }
+#crowd.focus::after { content: ''; position: absolute; inset: 0; background: rgba(3, 5, 20, 0.22); }
+#crowd.off { display: none; }
+.c-back, .c-riser { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
+.c-row { position: absolute; inset: 0; }
+.c-sign { position: absolute; text-align: center; font-size: 27px; font-weight: 900; letter-spacing: 0.5em; }
+.c-sign.red { color: rgba(235, 130, 130, 0.75); } .c-sign.blue { color: rgba(130, 170, 230, 0.8); }
+
+/* in the dark: every fan is a dim shape with a team-coloured rim of light, and lights up when they react */
+.kid { position: absolute; transform-origin: 50% 100%; opacity: calc(var(--b, 0.4) * var(--f, 1)); transition: opacity 0.35s; }
+.kid:not(.m-idle) { opacity: 1; }
+.kid .ksv { width: 100%; height: 100%; overflow: visible; display: block; transform-origin: 50% 100%; animation: bob var(--p, 1.8s) ease-in-out infinite; animation-delay: var(--d, 0s); }
+@keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+.kid .f, .kid .tear, .kid .sweat, .kid .steam { display: none; }
+.kid.m-idle .f-idle, .kid.m-happy .f-happy, .kid.m-cheer .f-happy, .kid.m-wow .f-wow, .kid.m-sad .f-sad, .kid.m-angry .f-angry, .kid.m-nerv .f-nerv { display: inline; }
+.kid .blink { transform-box: fill-box; transform-origin: center; }
+.kid.bl .blink { transform: scaleY(0.08); }
+@keyframes blink { 0%, 92%, 100% { transform: scaleY(1); } 95% { transform: scaleY(0.08); } }
+
+/* arms hang at rest; each mood lifts them */
+.kid .arm { transition: transform 0.28s cubic-bezier(0.3, 1.5, 0.5, 1); }
+.kid .arm.l, .kid .arm.l .wv { transform-origin: 28px 122px; }
+.kid .arm.r, .kid .arm.r .wv { transform-origin: 112px 122px; }
+.kid .arm.l { transform: rotate(12deg); } .kid .arm.r { transform: rotate(-12deg); }
+.kid .hd, .kid .hh { transform-origin: 70px 106px; transition: transform 0.3s; }
+.kid .hd { transform: none; }
+/* cheering: jump, both arms up and waving, head tilting */
+.kid.m-cheer .ksv { animation: jump var(--w, 0.6s) ease-in-out infinite; animation-delay: var(--d, 0s); }
+@keyframes jump { 0%, 100% { transform: translateY(0) scale(1.05, 0.93); } 45% { transform: translateY(-24px) scale(0.96, 1.05); } 80% { transform: translateY(-2px) scale(1, 1); } }
+.kid.m-cheer .arm.l { transform: rotate(158deg); } .kid.m-cheer .arm.r { transform: rotate(-158deg); }
+.kid.fw.m-cheer .wv { animation: wave var(--w, 0.6s) ease-in-out infinite alternate; }
+.kid.fw.m-cheer .arm.r .wv { animation-direction: alternate-reverse; }
+@keyframes wave { from { transform: rotate(-16deg); } to { transform: rotate(16deg); } }
+.kid.fw.m-cheer .hh { animation: tilt 0.6s ease-in-out infinite alternate; }
+@keyframes tilt { from { transform: rotate(-5deg); } to { transform: rotate(5deg); } }
+/* a small happy bounce with one arm up */
+.kid.m-happy .arm.r { transform: rotate(-150deg); }
+.kid.fw.m-happy .arm.r .wv { animation: wave 0.7s ease-in-out infinite alternate; }
+.kid.m-happy .ksv { animation-duration: 0.9s; }
+/* gasp */
+.kid.m-wow .ksv { animation: gasp 0.4s ease-out both; }
+@keyframes gasp { 0% { transform: translateY(0) scale(1); } 40% { transform: translateY(-14px) scale(1.07); } 100% { transform: translateY(-4px) scale(1.04); } }
+.kid.m-wow .arm.l { transform: rotate(138deg); } .kid.m-wow .arm.r { transform: rotate(-138deg); }
+/* sad: slumped, head down, tears */
+.kid.m-sad .ksv { animation: slump 2.6s ease-in-out infinite; animation-delay: var(--d, 0s); }
+@keyframes slump { 0%, 100% { transform: translateY(8px) scale(1, 0.96); } 50% { transform: translateY(11px) scale(1, 0.94); } }
+.kid.m-sad .hd { transform: translate(0, 8px) rotate(-5deg); }
+.kid.m-sad .arm.l { transform: rotate(3deg); } .kid.m-sad .arm.r { transform: rotate(-3deg); }
+.kid.m-sad .tear { display: inline; }
+.kid.fw.m-sad .tear { animation: drip 1.2s ease-in infinite; }
+.kid.fw.m-sad .tear.t2 { animation-delay: 0.55s; }
+@keyframes drip { 0% { transform: translateY(-4px); opacity: 0; } 20% { opacity: 1; } 100% { transform: translateY(26px); opacity: 0; } }
+/* cross: shaking fists, steam */
+.kid.m-angry .ksv { animation: stomp 0.18s steps(2) infinite; }
+@keyframes stomp { 0% { transform: translate(-3px, 0); } 100% { transform: translate(3px, -2px); } }
+.kid.m-angry .arm.l { transform: rotate(112deg); } .kid.m-angry .arm.r { transform: rotate(-112deg); }
+.kid.fw.m-angry .wv { animation: fist 0.22s ease-in-out infinite alternate; }
+@keyframes fist { from { transform: rotate(-9deg); } to { transform: rotate(9deg); } }
+.kid.m-angry .steam { display: inline; }
+.kid.fw.m-angry .steam circle { animation: puff 0.9s ease-out infinite; transform-box: fill-box; transform-origin: center; }
+.kid.fw.m-angry .steam circle:nth-child(2) { animation-delay: 0.3s; } .kid.fw.m-angry .steam circle:nth-child(3) { animation-delay: 0.6s; }
+@keyframes puff { 0% { transform: translateY(8px) scale(0.4); opacity: 0; } 30% { opacity: 1; } 100% { transform: translateY(-18px) scale(1.15); opacity: 0; } }
+/* nervous: trembling, sweat */
+.kid.m-nerv .ksv { animation: tremble 0.12s steps(2) infinite; }
+@keyframes tremble { 0% { transform: translateX(-1.5px); } 100% { transform: translateX(1.5px); } }
+.kid.m-nerv .sweat { display: inline; }
+.kid.fw.m-nerv .sweat { animation: drip 1.4s ease-in infinite; }
+.kid.nb .ksv { animation: none; }
+
+/* =====================================================================
+   THE MASCOTS: a red robot and a blue robot
+   ===================================================================== */
+.mascot { position: absolute; }
+.mascot .msv { width: 100%; height: 100%; overflow: visible; display: block; }
+.mascot .mf, .mascot .tear { display: none; }
+.mascot.m-idle .mf-idle, .mascot.m-cheer .mf-cheer, .mascot.m-sad .mf-sad, .mascot.m-wow .mf-wow { display: inline; }
+.mascot .blink { transform-box: fill-box; transform-origin: center; animation: blink 4.6s infinite; }
+.mascot .mbody { transform-origin: 160px 340px; animation: mbounce 1.15s ease-in-out infinite; }
+@keyframes mbounce { 0%, 100% { transform: translateY(0) scale(1.02, 0.97); } 50% { transform: translateY(-16px) scale(0.98, 1.03); } }
+.mascot.blue .mbody { animation-delay: -0.5s; }
+.mascot .marm { transition: transform 0.3s cubic-bezier(0.3, 1.5, 0.5, 1); }
+.mascot .marm.l, .mascot .marm.l .wv { transform-origin: 58px 204px; }
+.mascot .marm.r, .mascot .marm.r .wv { transform-origin: 262px 204px; }
+.mascot .marm.l { transform: rotate(10deg); } .mascot .marm.r { transform: rotate(-10deg); }
+.mascot.m-cheer .mbody { animation: mjump 0.7s ease-in-out infinite; }
+@keyframes mjump { 0%, 100% { transform: translateY(0) scale(1.05, 0.93); } 45% { transform: translateY(-46px) scale(0.96, 1.05); } 80% { transform: translateY(0) scale(1, 1); } }
+.mascot.m-cheer .marm.l { transform: rotate(150deg); } .mascot.m-cheer .marm.r { transform: rotate(-150deg); }
+.mascot.m-cheer .wv { animation: mwave 0.35s ease-in-out infinite alternate; }
+@keyframes mwave { from { transform: rotate(-14deg); } to { transform: rotate(14deg); } }
+.mascot.m-sad .mbody { animation: msad 2.8s ease-in-out infinite; }
+@keyframes msad { 0%, 100% { transform: translateY(10px) scale(1.02, 0.94); } 50% { transform: translateY(14px) scale(1.02, 0.92); } }
+.mascot.m-sad .marm.l { transform: rotate(0deg); } .mascot.m-sad .marm.r { transform: rotate(0deg); }
+.mascot.m-sad .tear { display: inline; animation: mdrip 1.3s ease-in infinite; }
+@keyframes mdrip { 0% { transform: translateY(-6px); opacity: 0; } 20% { opacity: 1; } 100% { transform: translateY(40px); opacity: 0; } }
+.mascot.m-wow .mbody { animation: mgasp 0.45s ease-out both; }
+@keyframes mgasp { 0% { transform: translateY(0) scale(1); } 45% { transform: translateY(-24px) scale(1.06); } 100% { transform: translateY(-6px) scale(1.03); } }
+
+/* =====================================================================
+   TITLE, MENU, LOBBY AND RESULTS
+   ===================================================================== */
+.rise { animation: rise 0.6s cubic-bezier(0.2, 1.3, 0.4, 1) both; animation-delay: var(--ad, 0s); }
+@keyframes rise { from { opacity: 0; translate: 0 70px; } to { opacity: 1; translate: 0 0; } }
+
+.logo { position: absolute; left: 0; right: 0; top: 108px; text-align: center; white-space: nowrap; font-size: 226px; font-weight: 1000; font-style: italic; line-height: 1.04; letter-spacing: -0.03em; }
+.logo .w1, .logo .w2 { display: inline-block; }
+.logo .gap { display: inline-block; width: 60px; }
+.logo .l { display: inline-block; padding: 0 0.04em; color: transparent; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; animation: lbounce 2.6s ease-in-out infinite; animation-delay: calc(var(--i) * 0.11s); }
+.logo .w1 .l { color: var(--red); -webkit-text-fill-color: var(--red); text-shadow: 0 0 36px rgba(215, 53, 59, 0.5); }
+.logo .w2 .l { color: var(--blue); -webkit-text-fill-color: var(--blue); text-shadow: 0 0 36px rgba(45, 107, 207, 0.55); }
+@keyframes lbounce { 0%, 55%, 100% { transform: translateY(0); } 25% { transform: translateY(-16px); } 40% { transform: translateY(0); } }
+.logo.small { top: 36px; font-size: 100px; }
+.logo.small .l { animation: none; }
+.logo.small .gap { width: 28px; }
+.tagline { position: absolute; left: 0; right: 0; top: 372px; text-align: center; font-size: 30px; font-weight: 900; letter-spacing: 0.5em; color: rgba(235, 240, 255, 0.82); text-shadow: 0 2px 14px rgba(0, 0, 0, 0.6); }
+/* stage light over each mascot */
+.spot { position: absolute; width: 640px; height: 620px; pointer-events: none; }
+.spot::before { content: ''; position: absolute; inset: 0; clip-path: polygon(40% 0, 60% 0, 100% 100%, 0 100%); }
+.spot::after { content: ''; position: absolute; left: 50px; right: 50px; bottom: 6px; height: 120px; border-radius: 50%; }
+.spot.red::before { background: linear-gradient(180deg, rgba(220, 90, 95, 0), rgba(220, 90, 95, 0.14)); }
+.spot.red::after { background: radial-gradient(closest-side, rgba(220, 90, 95, 0.32), transparent); }
+.spot.blue::before { background: linear-gradient(180deg, rgba(90, 140, 220, 0), rgba(90, 140, 220, 0.15)); }
+.spot.blue::after { background: radial-gradient(closest-side, rgba(90, 140, 220, 0.34), transparent); }
+.spot.red { left: 105px; top: 330px; } .spot.blue { left: 1175px; top: 330px; }
+.title-m.red { left: 230px; top: 410px; width: 390px; height: 463px; }
+.title-m.blue { left: 1300px; top: 410px; width: 390px; height: 463px; }
+.vsb { position: absolute; left: 50%; top: 500px; width: 210px; height: 210px; margin-left: -105px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: #10153f; border: 3px solid var(--amber); box-shadow: 0 0 60px rgba(255, 196, 61, 0.45), inset 0 0 30px rgba(255, 196, 61, 0.15); }
+.vsb span { font-size: 100px; font-weight: 1000; font-style: italic; color: var(--amber); text-shadow: 0 0 24px rgba(255, 196, 61, 0.8); animation: vspulse 1.2s ease-in-out infinite alternate; }
+@keyframes vspulse { from { transform: scale(0.94); } to { transform: scale(1.08); } }
+.press { position: absolute; left: 0; right: 0; top: 792px; text-align: center; }
+.press span { display: inline-block; padding: 10px 56px; border-radius: 999px; background: var(--g-amber); box-shadow: 0 10px 40px rgba(255, 196, 61, 0.45); font-size: 40px; font-weight: 1000; letter-spacing: 0.1em; color: var(--amber-ink); animation: pressy 0.9s ease-in-out infinite alternate; }
+@keyframes pressy { from { transform: scale(1); } to { transform: scale(1.07); } }
+
+/* year menu */
+.ycard { position: absolute; top: 196px; width: 560px; height: 380px; border-radius: 44px; background: var(--panel); border: 1px solid var(--hair2); box-shadow: var(--shadow); cursor: pointer; transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s; }
+.ycard.y5 { left: 340px; } .ycard.y6 { left: 1020px; }
+.ycard .yl { position: absolute; left: 0; right: 0; top: 30px; text-align: center; font-weight: 900; font-size: 26px; letter-spacing: 0.42em; color: var(--amber); }
+.ycard .big { position: absolute; left: 0; right: 0; top: 56px; text-align: center; font-size: 200px; font-weight: 1000; font-style: italic; line-height: 1.04; color: #fff; text-shadow: 0 0 50px rgba(255, 196, 61, 0.35); }
+.ycard .sub { position: absolute; left: 28px; right: 28px; top: 290px; text-align: center; font-size: 25px; font-weight: 700; color: var(--ink2); line-height: 1.35; }
+.ycard.focus, .ycard:hover { transform: scale(1.05); border-color: var(--amber); box-shadow: 0 0 0 3px var(--amber), 0 0 70px rgba(255, 196, 61, 0.35), var(--shadow); z-index: 3; }
+.menu-m.red { left: 22px; top: 330px; width: 300px; height: 356px; }
+.menu-m.blue { left: 1598px; top: 330px; width: 300px; height: 356px; }
+.mbtn { top: 650px; width: 330px; height: 96px; }
+.mbtn.mb1 { left: 435px; } .mbtn.mb2 { left: 795px; } .mbtn.mb3 { left: 1155px; }
+
+/* lobby */
+.lobby-title { position: absolute; left: 0; right: 0; top: 40px; text-align: center; font-size: 76px; font-weight: 900; color: #fff; letter-spacing: 0.02em; text-shadow: 0 2px 20px rgba(0, 0, 0, 0.6); }
+.lobby-go { left: 1089px; top: 800px; width: 420px; height: 80px; font-size: 32px; }
+.lobby-back { left: 411px; top: 800px; width: 200px; height: 80px; font-size: 28px; }
+.lobby-mode { left: 635px; top: 800px; width: 430px; height: 80px; font-size: 26px; font-weight: 700; }
+.lobby-mode b { font-weight: 900; color: var(--amber-hi); }
+
+/* results */
+.res-row { position: absolute; left: 0; right: 0; top: 250px; height: 400px; }
+.res-m.red { left: 90px; top: 12px; width: 340px; height: 404px; }
+.res-m.blue { left: 1490px; top: 12px; width: 340px; height: 404px; }
+.res-row .scores { position: absolute; left: 400px; right: 400px; top: 30px; display: flex; justify-content: center; align-items: center; gap: 36px; }
+.res-row .tsc { width: 420px; height: 340px; border-radius: 40px; box-shadow: var(--shadow); display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.res-row .tsc.red { background: var(--g-red); box-shadow: 0 16px 60px rgba(215, 53, 59, 0.4); }
+.res-row .tsc.blue { background: var(--g-blue); box-shadow: 0 16px 60px rgba(45, 107, 207, 0.42); }
+.res-row .tsc .nm { font-size: 54px; font-weight: 900; color: #fff; letter-spacing: 0.1em; }
+.res-row .tsc .v { margin-top: 4px; font-size: 150px; font-weight: 900; line-height: 1.1; color: #fff; text-shadow: 0 4px 24px rgba(0, 0, 0, 0.3); }
+.res-row .vs { font-size: 50px; font-weight: 900; color: var(--ink2); }
+.res-btn { top: 706px; width: 380px; height: 96px; font-size: 32px; }
+.res-btn.again { left: 540px; } .res-btn.menu { left: 1000px; }
+
+/* =====================================================================
+   PORTRAIT (1080 x 1920)
+   ===================================================================== */
+.portrait .logo { top: 170px; font-size: 232px; line-height: 1.02; }
+.portrait .logo .w1, .portrait .logo .w2 { display: block; }
+.portrait .logo .gap { display: none; }
+.portrait .logo.small { top: 44px; font-size: 112px; }
+.portrait .logo.small .w1, .portrait .logo.small .w2 { display: inline-block; }
+.portrait .logo.small .gap { display: inline-block; }
+.portrait .tagline { top: 700px; font-size: 26px; letter-spacing: 0.4em; }
+.portrait .spot.red { left: -15px; top: 720px; } .portrait .spot.blue { left: 455px; top: 720px; }
+.portrait .title-m.red { left: 80px; top: 790px; width: 390px; height: 463px; }
+.portrait .title-m.blue { left: 610px; top: 790px; width: 390px; height: 463px; }
+.portrait .vsb { top: 880px; width: 180px; height: 180px; margin-left: -90px; }
+.portrait .vsb span { font-size: 84px; }
+.portrait .press { top: 1330px; }
+.portrait .ycard { left: 140px !important; width: 800px; height: 400px; }
+.portrait .ycard.y5 { top: 220px; } .portrait .ycard.y6 { top: 680px; }
+.portrait .menu-m.red { left: 40px; top: 1130px; width: 270px; height: 321px; }
+.portrait .menu-m.blue { left: 770px; top: 1130px; width: 270px; height: 321px; }
+.portrait .mbtn { top: 1180px; width: 290px; height: 100px; }
+.portrait .mbtn.mb1 { left: 40px; } .portrait .mbtn.mb2 { left: 395px; } .portrait .mbtn.mb3 { left: 750px; }
+.portrait .lobby-title { top: 56px; font-size: 68px; }
+.portrait .lobby-go { left: 290px; top: 1440px; width: 500px; height: 88px; }
+.portrait .lobby-back { left: 440px; top: 1560px; width: 200px; height: 80px; }
+.portrait .lobby-mode { left: 190px; top: 1340px; width: 700px; height: 80px; }
+.portrait .res-row { top: 360px; height: 900px; }
+.portrait .res-m.red { left: 90px; top: 0; width: 330px; height: 392px; }
+.portrait .res-m.blue { left: 660px; top: 0; width: 330px; height: 392px; }
+.portrait .res-row .scores { left: 40px; right: 40px; top: 430px; gap: 20px; }
+.portrait .res-row .tsc { width: 440px; height: 340px; }
+.portrait .res-row .vs { font-size: 42px; }
+.portrait .res-btn { top: 1360px; width: 440px; }
+.portrait .res-btn.again { left: 70px; } .portrait .res-btn.menu { left: 570px; }
+.portrait .win { top: 160px; font-size: 120px; }
+
+/* ---------- the winner screen: loud on purpose ---------- */
+.res-rays { position: absolute; left: 50%; top: 42%; width: 2400px; height: 2400px; margin: -1200px 0 0 -1200px; border-radius: 50%; will-change: transform; animation: rayspin 16s linear infinite; pointer-events: none; z-index: 0;
+  background: repeating-conic-gradient(from 0deg, var(--rc) 0 7deg, transparent 7deg 18deg); -webkit-mask: radial-gradient(circle, #000 12%, transparent 58%); mask: radial-gradient(circle, #000 12%, transparent 58%); }
+.res-rays.red { --rc: rgba(255, 110, 115, 0.34); } .res-rays.blue { --rc: rgba(110, 165, 255, 0.36); }
+@keyframes rayspin { to { transform: rotate(360deg); } }
+.win.chaos { font-size: 150px; animation: winshake 0.5s ease-in-out infinite alternate; z-index: 3; }
+@keyframes winshake { from { rotate: -2.4deg; scale: 1; } to { rotate: 2.4deg; scale: 1.06; } }
+.res-row .vs { display: flex; align-items: center; justify-content: center; width: 150px; }
+.res-row .vs .trophy { width: 150px; height: 188px; animation: trophybob 0.6s ease-in-out infinite alternate; }
+@keyframes trophybob { from { translate: 0 0; rotate: -5deg; } to { translate: 0 -16px; rotate: 5deg; } }
+.res-row .tsc.lost { opacity: 0.62; scale: 0.92; }
+.res-row .scores { gap: 14px; left: 330px; right: 330px; z-index: 2; }
+.res-m.res-winner { scale: 1.3; transform-origin: 50% 100%; z-index: 3; }
+.res-band { position: absolute; left: -6%; width: 112%; height: 66px; overflow: hidden; z-index: 1; display: flex; align-items: center; }
+.res-band.red { background: #d7353b; } .res-band.blue { background: #2d6bcf; }
+.res-band span { display: inline-block; white-space: nowrap; font-size: 40px; font-weight: 1000; letter-spacing: 0.22em; color: #fff; animation: marquee 10s linear infinite; }
+.res-band.b1 { top: 880px; rotate: -2.2deg; } .res-band.b2 { top: 962px; rotate: 1.8deg; opacity: 0.85; } .res-band.b2 span { animation-direction: reverse; animation-duration: 13s; }
+@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.portrait .win.chaos { font-size: 112px; }
+.portrait .res-band.b1 { top: 1620px; } .portrait .res-band.b2 { top: 1710px; }
+.portrait .res-m.res-winner { scale: 1.15; } .portrait .res-row .vs { width: 110px; } .portrait .res-row .vs .trophy { width: 110px; height: 138px; }
+
+/* the note under the winner title when the tie-break decided it */
+.res-note { position: absolute; left: 0; right: 0; top: 212px; text-align: center; font-size: 34px; font-weight: 1000; letter-spacing: 0.16em; color: #fff; z-index: 3; }
+.res-note.red { color: #ff9a9d; } .res-note.blue { color: #9cc4ff; }
+.portrait .res-note { top: 300px; font-size: 30px; }

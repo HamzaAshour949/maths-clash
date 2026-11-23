@@ -1,0 +1,64 @@
+/* Maths Clash v0.3: the big reactions (see js/react.js). Flat colours, hard shadows, nothing in the logo corner. */
+
+/* ---------- a right answer ---------- */
+.cel { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; z-index: 60; pointer-events: none; overflow: hidden; --tc: #ffc43d; --td: #b8860b; }
+.cel.red { --tc: #d7353b; --td: #8f1f24; } .cel.blue { --tc: #2d6bcf; --td: #1b4690; }
+.cel-flash { position: absolute; inset: 0; background: var(--tc); opacity: 0; }
+.cel-rays { position: absolute; left: 410px; top: -20px; width: 1100px; height: 1100px; border-radius: 50%;
+  background: repeating-conic-gradient(from 0deg, rgba(255, 255, 255, 0.3) 0deg 8deg, transparent 8deg 22.5deg), radial-gradient(circle, var(--tc) 0%, transparent 62%);
+  -webkit-mask-image: radial-gradient(circle, #000 30%, transparent 68%); mask-image: radial-gradient(circle, #000 30%, transparent 68%);
+  animation: celspin 9s linear infinite; opacity: 0; }
+@keyframes celspin { to { rotate: 360deg; } }
+.cel-card { position: absolute; left: 500px; top: 300px; width: 920px; height: 400px; border-radius: 40px; background: var(--tc); box-shadow: 0 14px 0 var(--td), 0 30px 80px rgba(0, 0, 0, 0.45);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 70px 40px 26px; box-sizing: border-box; color: #fff; }
+.cel-tick { position: absolute; left: 50%; top: -78px; width: 156px; height: 156px; margin-left: -78px; border-radius: 50%; background: #2fd27a; box-shadow: 0 8px 0 #1b9455; }
+.cel-tick svg { width: 100%; height: 100%; }
+.cel-tick path { fill: none; stroke: #fff; stroke-width: 12; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 90; stroke-dashoffset: 0; }
+.cel-t { width: 100%; text-align: center; font-family: var(--display); font-weight: 900; font-size: 132px; line-height: 1.12; letter-spacing: 0.01em; white-space: nowrap; }
+.cel-who { font-size: 36px; font-weight: 1000; letter-spacing: 0.2em; line-height: 1.1; opacity: 0.95; }
+.cel-pts { margin-top: 6px; padding: 4px 34px; border-radius: 22px; background: #ffd23d; color: #3a2600; box-shadow: 0 6px 0 #b8860b; font-family: var(--display); font-weight: 900; font-size: 76px; line-height: 1.05; }
+.cel-pts.sub { font-size: 50px; padding: 8px 34px; }
+.cel-stars { position: absolute; left: 960px; top: 500px; width: 0; height: 0; }
+.cel-stars i { position: absolute; left: -24px; top: -24px; width: 48px; height: 48px; }
+.cel-stars i svg { width: 100%; height: 100%; }
+.cel-stars i.s0 path { fill: #ffd23d; } .cel-stars i.s1 path { fill: #ffffff; } .cel-stars i.s2 path { fill: #2fd27a; }
+
+/* ---------- a wrong answer ---------- */
+.wr { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; z-index: 60; pointer-events: none; overflow: hidden; }
+.wr-dim { position: absolute; inset: 0; background: rgba(6, 8, 24, 0.72); box-shadow: inset 0 0 260px 40px rgba(230, 30, 40, 0.75); opacity: 0; }
+.wr-x { position: absolute; left: 810px; top: 190px; width: 300px; height: 300px; }
+.wr-x i { position: absolute; left: 0; top: 50%; width: 100%; height: 62px; margin-top: -31px; border-radius: 31px; background: #ff3b3b; box-shadow: 0 10px 0 #a3161b; }
+.wr-x i:first-child { transform: rotate(45deg); } .wr-x i:last-child { transform: rotate(-45deg); }
+.wr-card { position: absolute; left: 460px; top: 540px; width: 1000px; display: flex; flex-direction: column; align-items: center; gap: 14px; color: #fff; }
+.wr-t { font-family: var(--display); font-weight: 900; font-size: 150px; line-height: 1; letter-spacing: 0.02em; color: #ff4b4b; text-shadow: 0 8px 0 #7a0f14; white-space: nowrap; }
+.wr-who { display: flex; align-items: center; gap: 22px; font-size: 54px; font-weight: 1000; line-height: 1; }
+.wr-who .pill { padding: 10px 26px; border-radius: 18px; font-size: 36px; letter-spacing: 0.14em; color: #fff; }
+.wr-who .pill.red { background: #d7353b; box-shadow: 0 5px 0 #8f1f24; } .wr-who .pill.blue { background: #2d6bcf; box-shadow: 0 5px 0 #1b4690; }
+.wr-who b { color: #ff8a8a; }
+
+/* ---------- a small X on one answer tile (the tie-break race) ---------- */
+.stampx { position: absolute; left: 50%; top: 50%; width: 96px; height: 96px; margin: -48px 0 0 -48px; z-index: 3; pointer-events: none; }
+.stampx i { position: absolute; left: 0; top: 50%; width: 100%; height: 22px; margin-top: -11px; border-radius: 11px; background: #ff3b3b; box-shadow: 0 4px 0 #a3161b; }
+.stampx i:first-child { transform: rotate(45deg); } .stampx i:last-child { transform: rotate(-45deg); }
+
+/* a steal: a thief's mask on a yellow badge (a right answer keeps the green tick) */
+.cel-tick.steal { background: #ffc43d; box-shadow: 0 8px 0 #b8860b; }
+.cel-tick.steal path, .cel-tick.steal ellipse { stroke: none; stroke-dasharray: none; }
+.cel-tick.steal path { fill: #1d1f3a; } .cel-tick.steal ellipse { fill: #ffc43d; }
+
+/* v0.3: the pick ring follows the ticket's shape, notches included (his ask). It sits behind the lifted ticket in the same grid cell:
+   a team-colour band (5 px) inside a white band (4 px). Growing a shape with a 12 px notch by 5 / 9 px leaves notches of 7 / 3 px. */
+.tk.cur { box-shadow: 0 12px 0 rgba(0, 0, 0, 0.3); }
+.tk-sel { display: none; position: relative; z-index: 4; pointer-events: none; transform: translateY(-4px) scale(1.07); animation: none !important; }
+.bd.picking .tk-sel { display: block; }
+.tk-sel i { position: absolute; }
+.tk-sel .w { inset: -9px; border-radius: 23px;
+  background: radial-gradient(circle 3px at 9px 50%, transparent 98%, #fff 100%) left / 51% 100% no-repeat, radial-gradient(circle 3px at calc(100% - 9px) 50%, transparent 98%, #fff 100%) right / 51% 100% no-repeat; }
+.tk-sel .c { inset: -5px; border-radius: 19px;
+  background: radial-gradient(circle 7px at 5px 50%, transparent 98%, var(--cc) 100%) left / 51% 100% no-repeat, radial-gradient(circle 7px at calc(100% - 5px) 50%, transparent 98%, var(--cc) 100%) right / 51% 100% no-repeat; }
+
+/* v0.3: the volume sliders in Settings */
+.vctl { display: inline-flex; align-items: center; justify-content: center; gap: 12px; }
+.vbar { display: inline-block; vertical-align: middle; width: 220px; height: 12px; border-radius: 6px; background: rgba(255, 255, 255, 0.18); overflow: hidden; }
+.vbar i { display: block; height: 100%; border-radius: 6px; background: var(--amber); }
+.vnum { display: inline-block; min-width: 26px; text-align: right; }
